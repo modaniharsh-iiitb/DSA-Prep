@@ -53,3 +53,43 @@ Like before, there will be at most `h` iterations of each replacement in bottom-
 
 ### Converting an array into a heap (Heapification)
 
+Given an array of `k` elements, we may want to convert it into a valid heap while preserving the complete binary tree structure. Since the array already represents a complete binary tree when interpreted in BFS order, the only issue is enforcing the heap property at every node.
+
+A naive approach would be to insert each element one by one into an initially empty heap. However, since each insertion takes `O(log k)` time, this approach would take `O(k log k)` time overall, which is suboptimal.
+
+Instead, we can **heapify** the array in linear time using a **bottom-up heapification** process.
+
+#### Observation
+
+All leaf nodes trivially satisfy the heap property, since they have no children. Therefore, we only need to ensure the heap property for **internal nodes**.
+
+In an array-based representation of a heap:
+- The last internal node is located at index `⌊k/2⌋ - 1`
+- All indices from `⌊k/2⌋` to `k - 1` correspond to leaf nodes
+
+#### Algorithm
+
+1. Start from the last internal node at index `⌊k/2⌋ - 1`
+2. Perform **top-down heapification** (also called *sift-down*) on this node
+3. Move one index backward and repeat
+4. Continue until the root node (index `0`) is heapified
+
+By the time we reach the root, all subtrees below it already satisfy the heap property, ensuring that the entire array forms a valid heap.
+
+#### Correctness
+
+At each step, top-down heapification ensures that the subtree rooted at the current node satisfies the heap property, assuming its children already do. Since we process nodes from the bottom of the tree upward, this assumption always holds.
+
+Thus, after processing the root, the entire tree satisfies the heap property.
+
+#### Time Complexity Analysis
+
+Although top-down heapification takes `O(log k)` time in the worst case for a single node, most nodes are close to the leaves and therefore require very few swaps.
+
+More precisely:
+- There are at most `k / 2` nodes at height `1`
+- At most `k / 4` nodes at height `2`
+- At most `k / 8` nodes at height `3`
+- And so on
+
+The total work performed through this algorithm thus turns out to be `O(k)`. Hence, the total time complexity of heapifying an array is **`O(k)`**.
